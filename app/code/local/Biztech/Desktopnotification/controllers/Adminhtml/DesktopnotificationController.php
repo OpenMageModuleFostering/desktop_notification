@@ -50,4 +50,8 @@
                 $e->getMessage(); 
             }
         }
+
+        protected function _isAllow(){
+            return true;
+        }
 }

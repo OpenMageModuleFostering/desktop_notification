@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Biztech_Desktopnotification>
-            <version>0.1.2</version>
+            <version>0.1.3</version>
         </Biztech_Desktopnotification>
     </modules>
     <frontend>
@@ -23,20 +23,20 @@
             </updates>
         </layout>
     </frontend>
+    
     <admin>
         <routers>
-            <desktopnotification>
-                <use>admin</use>
-                <args>
-                    <module>Biztech_Desktopnotification</module>
-                    <frontName>desktopnotification</frontName>
-                </args>
-            </desktopnotification>
+            <adminhtml>
+                    <args>
+                    <modules>
+                        <desktopnotification after="Mage_Adminhtml">Biztech_Desktopnotification_Adminhtml</desktopnotification>
+                        </modules>
+                    </args>
+                </adminhtml>    
         </routers>
     </admin>
+
     <adminhtml>
-        <menu>
-        </menu>
         <acl>
             <resources>
                 <all>
