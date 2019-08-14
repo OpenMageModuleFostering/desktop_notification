@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--system configuration for notification module-->
+<config>
+    <tabs>
+        <biztech module="desktopnotification" translate="label">
+            <label>Biztech Extension</label>
+            <sort_order>100</sort_order>
+        </biztech>
+    </tabs>
+    <sections>
+        <desktopnotification module="desktopnotification" translate="label">
+            <label>Desktop Notification</label>
+            <sort_order>200</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <tab>biztech</tab>
+            <groups>
+                <notificationmessage translate="label">
+                    <label>Set Notification Message</label>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <message translate="label">
+                            <label>Notification Message</label>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>text</frontend_type>
+                        </message>
+                    </fields>
+                </notificationmessage>
+                <enablemodule translate="label">
+                    <label>Enable/Disable Notifications</label>
+                    <sort_order>11</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enable_notifications translate="label">
+                            <label>Enable Notifications</label>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </enable_notifications>
+                    </fields>
+                </enablemodule>
+                <uploadicon translate="label">
+                    <label>Upload Notification Icon</label>
+                    <sort_order>12</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <upload_notification_icon translate="label">
+                            <label>Desktop Notification Icon</label>
+                            <comment>Allowed file types: ICO, PNG, GIF, JPG, JPEG, APNG, SVG. If no icon is selected, it will use favicon. Not all browsers support all these formats!</comment>
+                            <frontend_type>image</frontend_type>
+                            <backend_model>Biztech_Desktopnotification_Model_Notificationicon</backend_model>
+                            <upload_dir config="system/filesystem/media" scope_info="1">bcdesktopnotification/icon</upload_dir>
+                            <base_url type="media" scope_info="1">bcdesktopnotification/icon</base_url>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </upload_notification_icon>
+                    </fields>
+                </uploadicon>
+            </groups>
+        </desktopnotification>
+    </sections>
+</config>

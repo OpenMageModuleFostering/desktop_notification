@@ -1,0 +1,75 @@
+<script type="text/javascript">
+    Event.observe(window, "load", function(){
+            ajaxCall();
+    });
+    setInterval(ajaxCall,30000);
+    function ajaxCall() {
+        var url = '<?php echo $this->getUrl('ordernotification/index/index'); ?>';
+        new Ajax.Request(url, 
+            {
+                method: 'post', 
+                asynchronous: true,
+                onSuccess: function(transport) {
+                    if(transport.status == 200) { 
+                        var response = transport.responseText; 
+                        response = response.evalJSON();
+                        for(var i=0; i<response.length; i++) {
+                            notifyMe(response[i].notification_message,response[i].increment_id);
+                            updateNotifyFlag(response[i].id);
+                        }
+                        if(response['error'] ){ 
+                            $('login-please-wait').hide(); 
+                            $('error_msg').show(); 
+                            document.getElementById('error_msg').innerHTML = response['error']; 
+                        } 
+                    } 
+                }, 
+        });
+    }
+
+    function notifyMe(notifyMsg,bodyText) {
+        // Let's check if the browser supports notifications
+        if (!("Notification" in window)) {
+            alert("This browser does not support desktop notification");
+        }
+
+        // Let's check whether notification permissions have alredy been granted
+        else if (Notification.permission === "granted") {
+            // If it's okay let's create a notification
+            var notification = new Notification(notifyMsg,{ icon: "alert.ico", body: bodyText});
+            setTimeout(function(){
+                    notification.close(); //closes the notification
+                },5000);
+        }
+
+        // Otherwise, we need to ask the user for permission
+        else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+                    // If the user accepts, let's create a notification
+                    if (permission === "granted") {
+                        var notification = new Notification(notifyMsg,{ icon: "alert.ico", body: bodyText});
+                        setTimeout(function(){
+                                notification.close(); //closes the notification
+                            },5000);
+                    }
+            });
+        }
+
+
+        notification.close();
+    }
+
+    function updateNotifyFlag(ordernotify_id) {
+        var url   = '<?php echo $this->getUrl('ordernotification/index/user'); ?>';
+        var params= {id : ordernotify_id}
+        new Ajax.Request(url, 
+            {
+                method: 'post',
+                asynchronous: true,
+                parameters : params
+        });
+    }
+</script>
+<?php
+
+?>

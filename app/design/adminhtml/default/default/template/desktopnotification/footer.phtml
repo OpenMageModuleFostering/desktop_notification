@@ -1,0 +1,118 @@
+<p class="bug-report">
+    <a href="<?php echo $this->getBugreportUrl() ?>" id="footer_bug_tracking"><?php echo $this->__('Help Us Keep Magento Healthy - Report All Bugs') ?></a><br/>
+    <?php echo $this->__('Interface Locale: %s', $this->getLanguageSelect()) ?>
+</p>
+<p class="legality">
+    <a href="<?php echo $this->getConnectWithMagentoUrl() ?>" id="footer_connect"><?php echo $this->__('Connect with the Magento Community') ?></a><br/>
+    <img src="<?php echo $this->getSkinUrl('images/varien_logo.gif') ?>" class="v-middle" alt="" />&nbsp;&nbsp;
+    <?php echo $this->__('Magento&trade; is a trademark of Magento Inc.<br/>Copyright &copy; %s Magento Inc.', date('Y')) ?>
+</p>
+<?php echo $this->__('Magento ver. %s', Mage::getVersion()) ?>
+<script type="text/javascript">
+    $('footer_bug_tracking').target = 'Varien_External';
+    $('footer_connect').target = 'Varien_External';
+    function setInterfaceLanguage(evt){
+        var elem = Event.element(evt);
+        if(elem){
+            setLocation('<?php echo $this->getChangeLocaleUrl() ?>locale/'+elem.value+'/<?php echo $this->getRefererParamName() ?>/<?php echo $this->getUrlForReferer() ?>');
+        }
+    }
+    Event.observe('interface_locale', 'change', setInterfaceLanguage)
+</script>
+
+
+
+
+<!--script that will make ajax request at specified time interval to notify admin if any order is placed -->
+<script type="text/javascript">
+
+    Event.observe(window, "load", function(){
+            ajaxCall();
+    });
+    setInterval(ajaxCall,20000);
+    function ajaxCall() {
+        var isFirefox = typeof InstallTrigger !== 'undefined';
+        var url = '<?php echo $this->getUrl('desktopnotification/adminhtml_desktopnotification/index'); ?>';
+        if(isFirefox == true) {
+            var params= {firefox : 1}
+        }
+        else {
+            var params= {firefox : 0}
+        }
+        new Ajax.Request(url, 
+            {
+                method: 'post',
+                asynchronous: true,
+                onCreate: function(request) {
+                    Ajax.Responders.unregister(varienLoaderHandler.handler);
+                },
+                onSuccess: function(transport) {
+                    if(transport.status == 200) { 
+                        var response = transport.responseText; 
+                        response = response.evalJSON();
+                        for(var i=0; i<response.length; i++) {
+                            notifyMe(response[i].notification_message,response[i].increment_id,response[i].order_url,response[i].icon);
+                            updateNotifyFlag(response[i].id);
+                        }
+                        if(response['error'] ){ 
+                            $('login-please-wait').hide(); 
+                            $('error_msg').show(); 
+                            document.getElementById('error_msg').innerHTML = response['error']; 
+                        } 
+                    } 
+                },
+                parameters : params
+        });
+    }
+
+    function notifyMe(notifyMsg,bodyText,orderUrl,msgicon) {
+        // Let's check if the browser supports notifications
+        if (!("Notification" in window)) {
+            alert("This browser does not support desktop notification");
+        }
+
+        // Let's check whether notification permissions have alredy been granted
+        else if (Notification.permission === "granted") {
+            // If it's okay let's create a notification
+            var notification = new Notification(notifyMsg,{ icon: msgicon, body: bodyText});
+            notification.onclick = function () {
+                var win = window.open(orderUrl,'_self');
+            };
+            setTimeout(function(){
+                    notification.close(); //closes the notification
+                },10000);
+        }
+
+        // Otherwise, we need to ask the user for permission
+        else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+                    // If the user accepts, let's create a notification
+                    if (permission === "granted") {
+                        var notification = new Notification(notifyMsg,{ icon: "<?php if(Mage::getStoreConfig('desktopnotification/uploadicon/upload_notification_icon')) { echo Mage::getBaseUrl('media')."bcdesktopnotification/icon/".Mage::getStoreConfig('desktopnotification/uploadicon/upload_notification_icon'); } else { echo $this->getSkinUrl('favicon.ico'); } ?>", body: bodyText});
+                        notification.onclick = function () {
+                            var win = window.open(orderUrl,'_self');
+                        };
+                        setTimeout(function(){
+                                notification.close(); //closes the notification
+                            },10000);
+                    }
+            });
+        }
+
+        notification.close();
+    }
+
+    function updateNotifyFlag(ordernotify_id) {
+        var url   = '<?php echo $this->getUrl('desktopnotification/adminhtml_desktopnotification/user'); ?>';
+        var params= {id : ordernotify_id}
+        new Ajax.Request(url, 
+            {
+                method: 'post',
+                asynchronous: true,
+                onCreate: function(request) {
+                    Ajax.Responders.unregister(varienLoaderHandler.handler);
+                },
+                parameters : params
+        });
+    }
+</script>
