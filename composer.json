@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/desktop_notification",
+    "name": "OpenMageModuleFostering\/desktop_notification",
     "type": "magento-module",
     "license": "OSL-v3.0",
     "homepage": "",
     "description": "Desktop Notification extension for getting in admin side notification when order placed",
     "authors": [
-    {
-        "name": "Biztech",
-        "email": "sales@biztechconsultancy.com"
-    }
-],
+        {
+            "name": "Biztech",
+            "email": "sales@biztechconsultancy.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
